@@ -10,19 +10,17 @@
             const countries = await getData('https://restcountries.com/v3.1/all?fields=name,population,currencies,region')
             return countries
         }
-        const country = await getData(`https://restcountries.com/v3.1/${countrySearchId}?fields=name,population,currencies,region`)
+        const country = await getData(`https://restcountries.com/v3.1/name/${countrySearchId}?fields=name,population,currencies,region`)
+        console.log(country)
         return country
     }
 
     // generateHTML (process input)
     const generateCountriesHTML = (countries) => {
 
-        if (!countries) return `<p class="text-danger">No countries were found..</p>`;
+        if (!countries) return `<p class="text-danger">No countries were found..</p>`; //looks like it's unnecessary but I wasn't sure
 
-        const sumPop = countries.reduce((cumulative, { population }) => {
-            const current = { ...cumulative }
-            return current + population;
-        }, 0)
+        const sumPop = countries.reduce((cumulative, { population }) => cumulative + population, 0)
         let html = `
             <div class="card shadow-sm border-primary  mx-auto w-50">
                 <div class="card-body">
@@ -94,41 +92,34 @@
         document.getElementById('countries-container').innerHTML = html
     }
 
-    // all countries data
-    try {
-        const countries = await fetchCountries()
-        let html = generateCountriesHTML(countries)
-        renderCountriesHTML(html)
-    }
-    catch (error) {
-        document.getElementById('countries-container').innerHTML = `<h5> Woops, something's wrong.. ${error.message}</h5>`
-    }
-
-    // main...
-    // const countries = await fetchCountries()
-
-    document.getElementById("country-id-button").addEventListener("click", async event => {
-        const countrySearchId = document.getElementById("country-id").value;
-
+    // all countries data for start
+    const getAllCountries = async() => {
         try {
-            const country = await fetchCountries(countrySearchId)
+            const countries = await fetchCountries()
             let html = generateCountriesHTML(countries)
             renderCountriesHTML(html)
         }
         catch (error) {
             document.getElementById('countries-container').innerHTML = `<h5> Woops, something's wrong.. ${error.message}</h5>`
         }
-
-
-        const html = generateCountriesHTML(country)
-        renderCountriesHTML(html)
+    }
+    document.getElementById("country-id-button").addEventListener("click", async event => {
+        event.preventDefault();
+        const countrySearchId = document.getElementById("country-id").value;
+        console.log(countrySearchId)
+        try {
+            const countrySearch = await fetchCountries(countrySearchId)
+            const html = generateCountriesHTML(countrySearch)
+            renderCountriesHTML(html)
+        }
+        catch (error) {
+            document.getElementById('countries-container').innerHTML = `<h5 class="text-danger">No countries were found..</h5>`
+        }
 
     })
-    document.getElementById("all-countries").addEventListener("click", event => {
-        const html = generateCountriesHTML(country)
-        renderCountriesHTML(html)
-
+    document.getElementById("all-countries").addEventListener("click", async event => {
+        getAllCountries();
     })
-
+    getAllCountries();
 
 })()
