@@ -11,7 +11,6 @@
             return countries
         }
         const country = await getData(`https://restcountries.com/v3.1/name/${countrySearchId}?fields=name,population,currencies,region`)
-        console.log(country)
         return country
     }
 
@@ -35,7 +34,7 @@
                     </ul>
                     </div>
             </div>
-            <table class="table">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Country name</th>
@@ -54,7 +53,7 @@
         html = html + `  
                             </tbody>
                         </table>
-                        <table class="table">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>Region</th>
@@ -82,10 +81,10 @@
         html = html + `  
                             </tbody>
                         </table>
-                        <table class="table">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th> Currency</th>
+                                    <th>Currency</th>
                                     <th align="left"> Number of countries using it</th>
                                 </tr>
                             </thead>
@@ -133,7 +132,6 @@
     document.getElementById("country-id-button").addEventListener("click", async event => {
         event.preventDefault();
         const countrySearchId = document.getElementById("country-id").value;
-        console.log(countrySearchId)
         try {
             const countrySearch = await fetchCountries(countrySearchId)
             const html = generateCountriesHTML(countrySearch)
