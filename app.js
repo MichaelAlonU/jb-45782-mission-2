@@ -58,7 +58,7 @@
                             <thead>
                                 <tr>
                                     <th>Region</th>
-                                    <th>Number of countries</th>
+                                    <th align="left">Number of countries</th>
                                 </tr>
                             </thead>
                             <tbody id="table-region-countries">`
@@ -73,11 +73,38 @@
         ).map(([region, count]) => `
             <tr>
                 <td>${region}</td>
-                <td>${count}</td>
+                <td align="left">${count}</td>
             </tr>
         `).join('');
-
         html = html + regionCountries;
+ 
+        //adding bonus info (currency) info
+        html = html + `  
+                            </tbody>
+                        </table>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> Currency</th>
+                                    <th align="left"> Number of countries using it</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-currency-countries">`
+
+        const currencyCountry = Object.entries(
+            countries.reduce((cumulative, { currencies }) => {
+                const current = Object.keys(currencies);
+                if (cumulative[current]) cumulative[current] += 1;
+                else cumulative[current] = 1;
+                return cumulative;
+            }, {})
+        ).map(([currency, count]) => `
+            <tr>
+                <td>${currency}</td>
+                <td align="left">${count}</td>
+            </tr>
+        `).join('');
+        html = html + currencyCountry;
         html = html + `
                             </tbody >
                         </table >
